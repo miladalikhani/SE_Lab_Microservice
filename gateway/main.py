@@ -1,11 +1,10 @@
 import json
-from flask import Flask, abort,request,make_response,jsonify
+from flask import Flask, abort, request, make_response, jsonify
 import requests
 
 app = Flask(__name__)
 
 endpoints = []
-
 
 
 @app.before_first_request
@@ -22,8 +21,18 @@ def send_request(endpoint, headers):
         res = requests.get(endpoint, headers=headers)
         return res
     elif request.method == 'POST':
-        res = requests.post(endpoint, headers=headers)
+        res = requests.post(endpoint, headers=headers, json=request.json)
         return res
+
+
+def authenticate():
+    if 'token' not in request.headers:
+        res = make_response(jsonify({}))
+        res.status_code = 401
+        return res
+    auth_endpoint = endpoints["auth/authenticate"]
+    res = requests.get(auth_endpoint,headers=request.headers)
+    return res
 
 @app.route('/')
 def hello():
@@ -36,12 +45,18 @@ def gateway(path):
     if path in endpoints:
         endpoint = endpoints[path]
         headers = {}
-        for k,v in request.headers:
+        auth_res = authenticate()
+        if auth_res.status_code in [200, 201]:
+            headers['username'] = auth_res.json()['username']
+        for k, v in request.headers:
             headers[k] = v
         response = send_request(endpoint, headers)
         if response.status_code not in [200, 201]:
             abort(response.status_code)
-        return jsonify(response.json())
+        res = make_response(jsonify(response.json()))
+        if response.headers['token']:
+            res.headers['token'] = response.headers['token']
+        return res
     else:
         abort(404)
 
