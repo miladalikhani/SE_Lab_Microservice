@@ -50,7 +50,10 @@ def gateway(path):
             headers['username'] = auth_res.json()['username']
         for k, v in request.headers:
             headers[k] = v
-        response = send_request(endpoint, headers)
+        try:
+            response = send_request(endpoint, headers)
+        except:
+            abort(500)
         if response.status_code not in [200, 201]:
             abort(response.status_code)
         res = make_response(jsonify(response.json()))

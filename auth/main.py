@@ -128,7 +128,18 @@ def signup():
     if user_exists(username):
         abort(409)
     if (create_auth_user(username,password)):
-        # delete_auth_user(username,password)
+        user_profile = {}
+        user_profile['username'] = username
+        user_profile['first_name'] = first_name
+        user_profile['last_name'] = last_name
+        try:
+            create_profile_response = requests.post(create_profile_endpoint,json=user_profile)
+        except:
+            delete_auth_user(username, password)
+            abort(500)
+        if (create_profile_response.status_code not in [200,201]):
+            delete_auth_user(username,password)
+            abort(create_profile_response.status_code)
         return jsonify({})
     else:
         abort(500)
