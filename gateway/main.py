@@ -54,7 +54,7 @@ def gateway(path):
         if response.status_code not in [200, 201]:
             abort(response.status_code)
         res = make_response(jsonify(response.json()))
-        if response.headers['token']:
+        if 'token' in response.headers:
             res.headers['token'] = response.headers['token']
         return res
     else:

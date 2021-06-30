@@ -42,7 +42,6 @@ def login():
             key=secret_key,
             algorithm="HS256"
         )
-        print(token)
         response = make_response(jsonify({}))
         response.headers['token'] = token
         return response
@@ -56,7 +55,6 @@ def authenticate():
         abort(401)
     token = request.headers['token']
     try:
-        print(token)
         data = jwt.decode(
             jwt=token,
             key=secret_key,

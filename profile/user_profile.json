@@ -1,0 +1,15 @@
+{
+  "users":
+          [
+            {
+              "username" : "milad",
+              "first_name" : "milad",
+              "last_name" : "alikhani"
+            },
+            {
+              "username" : "mina",
+              "first_name" : "mina",
+              "last_name" : "asgharzade"
+            }
+          ]
+}
