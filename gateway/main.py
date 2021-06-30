@@ -1,10 +1,11 @@
 import json
-
-from flask import Flask, abort
+from flask import Flask, abort,request
+import requests
 
 app = Flask(__name__)
 
 endpoints = []
+
 
 
 @app.before_first_request
@@ -25,7 +26,16 @@ def hello():
 def gateway(path):
     global endpoints
     if path in endpoints:
-        return endpoints[path]
+        endpoint = endpoints[path]
+        headers = []
+        for k,v in request.headers:
+            headers[k] = v
+        if request.method == 'GET':
+            res = requests.get(endpoint, headers=headers)
+            return res
+        elif request.method == 'POST':
+            res = requests.post(endpoint, headers=headers)
+            return res
     else:
         abort(404)
 

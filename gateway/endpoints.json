@@ -1,4 +1,6 @@
 {
   "auth/login" : "http://localhost:8081/auth/login",
-  "auth/signup" : "http://localhost:8081/auth/signup"
+  "auth/signup" : "http://localhost:8081/auth/signup",
+  "api/view_profile" : "http://localhost:8082/api/view_profile",
+  "api/create_profile" : "http://localhost:8082/api/create_profile"
 }
