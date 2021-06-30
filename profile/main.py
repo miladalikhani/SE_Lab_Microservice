@@ -84,8 +84,8 @@ def create_profile():
 
 
 @app.route('/')
-def hello():
-    return "hello"
+def index():
+    abort(404)
 
 
 if __name__ == '__main__':
