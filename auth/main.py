@@ -7,6 +7,7 @@ secret_key = "very_secret"
 
 app = Flask(__name__)
 
+create_profile_endpoint = "http://localhost:8082/api/create_profile"
 
 def get_all_users():
     auth_users_file = open("auth_users.json")
