@@ -17,6 +17,14 @@ def load_endpoints():
     endpoints = data
 
 
+def send_request(endpoint, headers):
+    if request.method == 'GET':
+        res = requests.get(endpoint, headers=headers)
+        return res
+    elif request.method == 'POST':
+        res = requests.post(endpoint, headers=headers)
+        return res
+
 @app.route('/')
 def hello():
     return "hello world"
@@ -30,14 +38,10 @@ def gateway(path):
         headers = {}
         for k,v in request.headers:
             headers[k] = v
-        if request.method == 'GET':
-            res = requests.get(endpoint, headers=headers)
-            final_response = make_response(jsonify(res.json()))
-            return final_response
-        elif request.method == 'POST':
-            res = requests.post(endpoint, headers=headers)
-            final_response = make_response(jsonify(res.json()))
-            return final_response
+        response = send_request(endpoint, headers)
+        if response.status_code not in [200, 201]:
+            abort(response.status_code)
+        return jsonify(response.json())
     else:
         abort(404)
 
