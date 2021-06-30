@@ -1,6 +1,7 @@
 import json
 from flask import Flask, abort, request, make_response, jsonify
 import requests
+from circuitbreaker import circuit
 
 app = Flask(__name__)
 
@@ -15,7 +16,7 @@ def load_endpoints():
     global endpoints
     endpoints = data
 
-
+@circuit
 def send_request(endpoint, headers):
     if request.method == 'GET':
         res = requests.get(endpoint, headers=headers)
