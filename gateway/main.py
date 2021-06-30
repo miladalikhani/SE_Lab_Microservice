@@ -1,5 +1,5 @@
 import json
-from flask import Flask, abort,request
+from flask import Flask, abort,request,make_response,jsonify
 import requests
 
 app = Flask(__name__)
@@ -27,15 +27,17 @@ def gateway(path):
     global endpoints
     if path in endpoints:
         endpoint = endpoints[path]
-        headers = []
+        headers = {}
         for k,v in request.headers:
             headers[k] = v
         if request.method == 'GET':
             res = requests.get(endpoint, headers=headers)
-            return res
+            final_response = make_response(jsonify(res.json()))
+            return final_response
         elif request.method == 'POST':
             res = requests.post(endpoint, headers=headers)
-            return res
+            final_response = make_response(jsonify(res.json()))
+            return final_response
     else:
         abort(404)
 
